@@ -36,7 +36,7 @@ chmod +x ./runEmailScript.sh
 ```shell
 crontab -e
 # After crontab file opens add
-0 */2 * * * cd /absolute/path/to/appleScripts/emailDetector/runEmailScript.sh
+0 */2 * * * cd /absolute/path/to/appleScripts/emailDetector && ./runEmailScript.sh
 # Save and exit
 ```
 
