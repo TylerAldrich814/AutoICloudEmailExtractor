@@ -9,9 +9,18 @@
 
 - When an email matching the specified address is found, the subject and body of the email are extracted, converted into a text message, and sent to the provided cellphone number.
 
-##### I'm personally running this as an auotmatic crontab job. Since I mainly use my Macbook from my hotspot. My Macbook will typcially start up with no internet. Thus causing the applescript to fail. The Shell script that crontab uses acutally detects if there's an internet connection first by pinging Google. If so, then it will run the AppleScript.
 
-### I've included two differnt ways to run this AppleScript automatically.
+### I've included three differnt ways to run this AppleScript automatically. Tho I'm personally using the LaunchCTL version. I had issues getting both SleepWatcher and crontab to work. Launchctl has access to Apples GUI, which allows the notifications to populate
+
+### launchctl setup.
+- Using `setup.sh` :: The script will ask you to input a timing interval.
+- Following the instructions, `setup.sh` will then compile a LaunchAgent file at `~/Library/LaunchAgents/`
+- The script will also Enable this generated file. If you run setup.sh a second time, the script will first unload the original LaunchAgent, remove the original file. And then regenerate and start the new file.
+- To manually remove this LaunchAgent
+```shellk
+launchctl unload ~/Library/LaunchAgents/com.YOUR_USERNAME.runemailscript.plist
+rm ~/Library/LaunchAgents/com.YOUR_USERNAME.runemailscript.plist
+```
 
 ### crontab setup
 - Open up `./runEmailScript.sh`. You'll need to update `LOG_FILE`'s directory path.
@@ -65,3 +74,4 @@ cd /opt/homebrew/opt/sleepwatcher/homebrew.mxcl.sleepwatcher.plist
 ```shell
 brew services start sleepwatcher
 ```
+

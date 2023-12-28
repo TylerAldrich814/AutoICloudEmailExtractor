@@ -17,11 +17,11 @@ tell application "Mail"
 	set currentDate to current date
 	set cutoffDate to currentDate - (3 * days)
 	set debug to false
-	
+
 	set inboxMessages to messages of inbox
 	set foundEmail to false
 	set emailContent to ""
-	
+
 	repeat with msg in inboxMessages
 		if sender of msg contains targetSender and (date received of msg) > cutoffDate then
 			set emailSubject to subject of msg

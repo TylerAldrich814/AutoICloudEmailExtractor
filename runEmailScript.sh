@@ -27,6 +27,8 @@ LOG_FILE="~/Development/appleScripts/AutoICloudEmailExtractor/runLog"
 LOG_FILE="${LOG_FILE/#\~/$HOME}"
 
 APPLESCRIPT_PATH="./myRunEmailScript.applescript"
+APPLESCRIPT_PATH="${APPLESCRIPT_PATH/#\~/$HOME}"
+
 
 # Even tho crontab will run this script every 2 hours. This is only to make
 # sure that the actual AppleScript is ran at least once per day. If you want
@@ -49,19 +51,18 @@ check_internet(){
 }
 
 if [ -s "$LOG_FILE" ]; then
-  # Read the last run time from the log
   last_run=$(cat "$LOG_FILE")
 
   # Convert last run time and current time to seconds since Unix epoch
   last_run_sec=$(date -j -f "%Y-%m-%d %H:%M:%S" "$last_run" "+%s")
   current_time_sec=$(date "+%s")
-
   diff_hours=$(( (current_time_sec - last_run_sec) / 3600 ))
 
 
   if [ $diff_hours -ge $EMAIL_SCAN_INCREMENT ]; then
     # check for interner connectivity
     if check_internet; then
+      echo "$(get_current_timestamp) :: Running AppleScript" # logs out to > /tmp/com.USERNAME.runEmailScript.out
       osascript "$APPLESCRIPT_PATH"
       update_log
     fi
