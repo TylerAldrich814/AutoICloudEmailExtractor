@@ -8,10 +8,87 @@
 # Replace a few directories and the minute timeframe.
 # Save it @ ~/Library/LaunchAgents/com.USERNAME.runemailscript.plist
 # And finally, Activate the plist file via launchctl
+#
+# LaunchCTL Logging files
+#  echo logs -> /tmp/com.USERNAME.runemailscript.out
+#   err logs -> /tmp/com.USERNAME.runemailscript.err
+get_current_timestamp(){
+  date '+%Y-%m-%d %H:%M:%S'
+}
+log(){
+  echo "$(get_current_timestamp) :: $1"
+}
+cat_file(){
+  if [ ! -f "$1" ]; then
+    echo "File not found: $1"
+    exit 1
+  fi
+
+  longest=0
+  while IFS= read -r line; do
+    line_len=${#line}
+    if [[ line_len -ge longest ]]; then
+      longest=$line_len
+    fi
+  done <$1
+
+  longest=$((longest + 10))
+  breakline=$(printf '_%.0s' $(seq 1 $(( $longest + 5 ))))
+  echo "$breakline"
+  echo "|$(printf ' %.0s' $(seq 1 $(( $longest + 3))))|"
+  while IFS= read -r line; do
+    length=${#line}
+    padding=$(printf ' %.0s' $(seq 1 $(( $longest - $length))))
+    echo "|   $line$padding|"
+  done < $1
+  echo $breakline
+}
+
+
+USERNAME=$(whoami)
+
+LCTL_ERR_FILE="/tmp/com.$USERNAME.runemailscript.err"
+LCTL_OUT_FILE="/tmp/com.$USERNAME.runemailscript.out"
+
+MODE=$1
+in_debug=0
+
+while [ "$1" != "" ]; do
+  log $1
+  case $1 in
+    -d | --debug )
+      log "in debug mode"
+      in_debug=1
+      ;;
+    -e | --error )
+      if [[ $in_debug -eq 1 ]]; then
+        log "Reading Err Log: $LCTL_ERR_FILE"
+        cat_file "$LCTL_ERR_FILE"
+      fi
+      ;;
+    -o | --out )
+      if [[ $in_debug -eq 1 ]]; then
+        log "Reading Out log: $LCTL_OUT_FILE"
+        cat_file "$LCTL_OUT_FILE"
+      fi
+      ;;
+    * )
+      if [[ $in_debug -eq 1 ]]; then
+        return 0
+      fi
+      ;;
+  esac
+  shift
+done
+if [[ $in_debug -eq 1 ]]; then
+  echo $in_debug
+  log "In debug - exiting"
+  return 0
+fi
+
 
 function create_plist(){
   MINUTES=$1
-  USERNAME=${whoami}
 
   TEMPLATE_PLIST="${PWD}/example.com.yourusername.runemailscript.plist"
   TEMPLATE_PLIST="${TEMPLATE_PLIST/#\~/$HOME}"

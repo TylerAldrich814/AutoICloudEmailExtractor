@@ -21,7 +21,7 @@
 # -----------------------------------------------------------------------------
 
 # NOTE: You'll need to update the path for 'LOG_FILE' to where
-#       you've clone this repo to. Remember, the '~' to Shell, means
+#       you've cloned this repo to. Remember, the '~' to Shell, means
 #       your User Home Directory.
 LOG_FILE="~/Development/appleScripts/AutoICloudEmailExtractor/runLog"
 LOG_FILE="${LOG_FILE/#\~/$HOME}"
@@ -29,6 +29,7 @@ LOG_FILE="${LOG_FILE/#\~/$HOME}"
 APPLESCRIPT_PATH="./myRunEmailScript.applescript"
 APPLESCRIPT_PATH="${APPLESCRIPT_PATH/#\~/$HOME}"
 
+SCRIPT_FILE="${0##*/}"
 
 # Even tho crontab will run this script every 2 hours. This is only to make
 # sure that the actual AppleScript is ran at least once per day. If you want
@@ -75,6 +76,6 @@ else
   echo "$subtracted_time" >> "$LOG_FILE"
 
   # Re-Run the same script
-  ./runEmailScript.sh
+  ./$SCRIPT_FILE
 fi
 

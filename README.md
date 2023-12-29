@@ -17,7 +17,7 @@
 - Following the instructions, `setup.sh` will then compile a LaunchAgent file at `~/Library/LaunchAgents/`
 - The script will also Enable this generated file. If you run setup.sh a second time, the script will first unload the original LaunchAgent, remove the original file. And then regenerate and start the new file.
 - To manually remove this LaunchAgent
-```shellk
+```shell
 launchctl unload ~/Library/LaunchAgents/com.YOUR_USERNAME.runemailscript.plist
 rm ~/Library/LaunchAgents/com.YOUR_USERNAME.runemailscript.plist
 ```
